@@ -7,7 +7,7 @@
 
 # Folders
 *curl
-*.vccode
+*.vscode
 
 # 
 *telegram_bot
