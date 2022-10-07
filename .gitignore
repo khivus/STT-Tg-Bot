@@ -1,0 +1,13 @@
+# Ignoring token file
+*token.h
+
+# Audiofiles
+*.wav
+*.ogg
+
+# Folders
+*curl
+*.vccode
+
+# 
+*telegram_bot
