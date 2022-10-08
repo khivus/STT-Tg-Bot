@@ -1,13 +1,12 @@
 # Ignoring token file
-*token.h
+/token.h
 
 # Audiofiles
-*.wav
-*.ogg
+/voice.flac
 
 # Folders
-*curl
-*.vscode
+curl/
+.vscode/
 
 # 
-*telegram_bot
+/telegram_bot
