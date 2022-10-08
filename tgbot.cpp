@@ -1,4 +1,4 @@
-// STT_Tg_Bot v0.0.2 Khivus 2022
+// STT_Tg_Bot v0.0.3 Khivus 2022
 //
 // for compilation and start:
 // g++ tgbot.cpp -o telegram_bot --std=c++14 -I/usr/local/include -lTgBot -lboost_system -lssl -lcrypto -lpthread -lcurl && ./telegram_bot
