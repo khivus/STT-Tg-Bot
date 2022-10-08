@@ -1,0 +1,11 @@
+{
+  "config": {
+      "encoding":"FLAC",
+      "sampleRateHertz": 16000,
+      "languageCode": "en-US",
+      "enableWordTimeOffsets": false
+  },
+  "audio": {
+      "uri":"voice.flac"
+  }
+}

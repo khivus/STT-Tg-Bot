@@ -6,6 +6,9 @@
 
 #include "token.h" // including private token
 
+#include "sync-request.json"
+#include "srproject-364912-1f4f2c308940.json"
+
 #include <stdio.h>
 #include <tgbot/tgbot.h>
 #include <string>
