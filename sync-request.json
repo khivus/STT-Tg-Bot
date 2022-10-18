@@ -1,11 +1,11 @@
 {
   "config": {
-      "encoding":"FLAC",
+      "encoding": "OGG_OPUS",
       "sampleRateHertz": 16000,
       "languageCode": "en-US",
       "enableWordTimeOffsets": false
   },
   "audio": {
-      "uri":"voice.flac"
+      "uri": ""
   }
 }
