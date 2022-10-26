@@ -7,6 +7,8 @@
 #include "token.h" // including private token
 // #include "google/cloud/speech/speech_client.h"
 // #include "google/cloud/project.h"
+// #include "langs/eng.h"
+// #include "langs/rus.h"
 
 #include <stdio.h>
 #include <tgbot/tgbot.h>
@@ -18,6 +20,37 @@
 
 using json = nlohmann::json;
 using namespace std;
+
+class langmanager {
+    public:
+        const string en = "Anime)";
+        const string ru = "No anime(";
+        string lang;
+        string bruh;
+
+        void update() {
+            if (lang == "ru-Ru") {
+                bruh = ru;
+            }
+            else if (lang == "en-US"){
+                bruh = en;
+            }
+        }
+};
+
+// string lang_update[] (string lang) {
+//     string engLang[] = { 
+//         "Hello!\nFor usage reply to me voice message with used command /convert !",
+//         "Hiiiii"
+//     };
+//     if (lang == "ru-Ru") {
+//         string mlang[] = rusLang;
+//     }
+//     else if (lang == "en-US"){
+//         string mlang[] = engLang;
+//     }
+//     return mlang;
+// }
 
 static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream) { // Func for download file with curl
   size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
@@ -83,8 +116,15 @@ void get_voice(string url) { // Func for get voice file
 int main() {
     TgBot::Bot bot(token);
 
+    // string lang = "en-US";
+    // string mlang[] = lang_update(lang);
+
+    // langmanager LM;
+    // LM.lang = "en-US";
+    // LM.update();
+
     bot.getEvents().onCommand("start", [&bot](TgBot::Message::Ptr message) { // If command /start
-        bot.getApi().sendMessage(message->chat->id, "Hi!");
+        bot.getApi().sendMessage(message->chat->id, "LM.bruh");
     });
 
     bot.getEvents().onCommand("convert", [&bot](TgBot::Message::Ptr message) { // If command /getreply. This is test name
@@ -109,6 +149,7 @@ int main() {
     });
 
     bot.getEvents().onCommand("language", [&bot](TgBot::Message::Ptr message) { // If command /start
+        // string lang = LM.lang;
         string lang = "en-US";
         string msg;
         if (lang == "ru-Ru") {
@@ -121,7 +162,10 @@ int main() {
     });
 
     bot.getEvents().onAnyMessage([&bot](TgBot::Message::Ptr message) {
-        printf("User wrote: %s\n", message->text.c_str());
+        if (StringTools::startsWith(message->text, "/")) 
+            cout << "User used command: " << message->text.c_str() << endl;
+        else
+            cout << "User wrote: " << message->text.c_str() << endl;
     });
 
     try {
