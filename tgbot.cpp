@@ -1,25 +1,26 @@
-// STT_Tg_Bot v0.0.4 Khivus 2022
+// STT_Tg_Bot v0.0.5 Khivus 2022
 //
 // for compilation and start:
 // g++ tgbot.cpp -o telegram_bot --std=c++14 -I/usr/local/include -lTgBot -lboost_system -lssl -lcrypto -lpthread -lcurl && ./telegram_bot
 // 
-
+#include "parse_arguments.h"
 #include "token.h" // including private token
-// #include "google/cloud/speech/speech_client.h"
-// #include "google/cloud/project.h"
-// #include "langs/eng.h"
-// #include "langs/rus.h"
+#include "google/cloud/speech/speech_client.h"
+#include "google/cloud/project.h"
 
+#include <aio.h>
 #include <stdio.h>
 #include <tgbot/tgbot.h>
 #include <string>
 #include <iostream>
 #include <curl/curl.h>
 #include <fstream>
+#include <iterator>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 using namespace std;
+namespace speech = ::google::cloud::speech;
 
 class langmanager {
     public:
@@ -37,6 +38,30 @@ class langmanager {
             }
         }
 };
+
+void speechhz() {
+    auto client = speech::SpeechClient(speech::MakeSpeechConnection());
+    // Parse command line arguments.
+    auto const args = ParseArguments(argc, argv);
+    speech::v1::RecognizeRequest request;
+    *request.mutable_config() = args.config;
+    // Load the audio file from disk into the request.
+    auto content =
+        std::string{std::istreambuf_iterator<char>(
+                        std::ifstream(args.path, std::ios::binary).rdbuf()),
+                    {}};
+    request.mutable_audio()->mutable_content()->assign(std::move(content));
+    // Send audio content using Recognize().
+    auto response = client.Recognize(request);
+    if (!response) throw std::move(response).status();
+    // Dump the transcript of all the results.
+    for (auto const& result : response->results()) {
+    for (auto const& alternative : result.alternatives()) {
+        std::cout << alternative.confidence() << "\t" << alternative.transcript()
+                << "\n";
+    }
+    }
+}
 
 // string lang_update[] (string lang) {
 //     string engLang[] = { 
