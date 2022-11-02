@@ -1,15 +1,19 @@
 # Ignoring token file
-/token.h
+token.h
 
 # Audiofiles
-/voice.flac
+audio.flac
 
 # Folders
 curl/
 .vscode/
 
 # 
-/telegram_bot
+telegram_bot
 
 # Google cloud key
 credentials-key.json
+sync-request.json
+
+# backup func file
+hz.cpp
