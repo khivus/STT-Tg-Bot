@@ -1,4 +1,4 @@
-// STT_Tg_Bot v0.1.1 Khivus 2022
+// STT_Tg_Bot v0.1.2 Khivus 2022
 //
 // for compilation and start:
 // g++ tgbot.cpp -o telegram_bot --std=c++14 -I/usr/local/include -lTgBot -lboost_system -lssl -lcrypto -lpthread -lcurl && ./telegram_bot
@@ -60,6 +60,7 @@ void get_voice(string url) { // Func for get voice file
 }
 
 string deflang = "eng";
+string adminid = "khivus";
 
 int main() {
     TgBot::Bot bot(token);
@@ -109,14 +110,11 @@ int main() {
             }
             cout << text << "\n";
             cout << returnCode << endl;
-
-            // system("../exmp/cpp-samples/speech/api/.build/transcribe --bitrate 16000 audio.flac");
-            // cout << ifstream("transcribe").rdbuf();
             
-            bot.getApi().sendMessage(message->chat->id, text, false, message->replyToMessage->messageId); // Outputting recognized text.
+            bot.getApi().sendMessage(message->chat->id, ("Recognized text: " + text).c_str(), false, message->replyToMessage->messageId); // Outputting recognized text.
         }
         else {
-            bot.getApi().sendMessage(message->chat->id, "Reply to the voice message and use this command again."); // If no replyed message and message isn't a voice message
+            bot.getApi().sendMessage(message->chat->id, "This command is used with reply to the voice message."); // If no replyed message and message isn't a voice message
         }
     });
 
@@ -133,10 +131,17 @@ int main() {
     });
 
     bot.getEvents().onAnyMessage([&bot](TgBot::Message::Ptr message) {
+        if (StringTools::startsWith(message->text, "/reboot") && message->from->username == adminid) { // very funny thing. If you use it, bot will go to infinite reboot...
+            cout << "Rebooting...\n";
+            bot.getApi().sendMessage(message->chat->id, "Rebooting...");
+            system("python3 reboot.py");
+            return 0;
+        }
         if (StringTools::startsWith(message->text, "/")) 
-            cout << "User used command: " << message->text.c_str() << endl;
+            cout << message->from->username << " used command: " << message->text.c_str() << endl;
+        
         else
-            cout << "User wrote: " << message->text.c_str() << endl;
+            cout << message->from << " wrote: " << message->text.c_str() << endl;
     });
 
     try {
