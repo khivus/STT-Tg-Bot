@@ -2,7 +2,7 @@
 token.h
 
 # Audiofiles
-audio.flac
+audio*
 
 # Folders
 curl/

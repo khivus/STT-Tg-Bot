@@ -1,4 +1,4 @@
-// STT_Tg_Bot v0.1.0 Khivus 2022
+// STT_Tg_Bot v0.1.1 Khivus 2022
 //
 // for compilation and start:
 // g++ tgbot.cpp -o telegram_bot --std=c++14 -I/usr/local/include -lTgBot -lboost_system -lssl -lcrypto -lpthread -lcurl && ./telegram_bot
@@ -48,7 +48,7 @@ void get_voice(string url) { // Func for get voice file
     curl = curl_easy_init();
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-    audiofile = fopen("audio.flac", "wb"); // (re)writing to "voice.flac" file
+    audiofile = fopen("audio.oga", "wb"); // (re)writing to "audio.oga" file
     if(audiofile) {
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, audiofile);
         curl_easy_perform(curl);
@@ -59,7 +59,7 @@ void get_voice(string url) { // Func for get voice file
     curl_global_cleanup();
 }
 
-string deflang = "rus";
+string deflang = "eng";
 
 int main() {
     TgBot::Bot bot(token);
@@ -69,7 +69,7 @@ int main() {
         bot.getApi().sendMessage(message->chat->id, resp);
     });
 
-    bot.getEvents().onCommand("convert", [&bot](TgBot::Message::Ptr message) { // If command /getreply. This is test name
+    bot.getEvents().onCommand("convert", [&bot](TgBot::Message::Ptr message) { // Main func for bot "/convert"
         if (message->replyToMessage != NULL && message->replyToMessage->voice != NULL) {
             printf("Bot got replied voice message.\n" // Output to console voice msg data
                     "Voice data is: [ %s, %s, %i, %s, %li ]\n", 
@@ -84,18 +84,20 @@ int main() {
             get_voice(file_url); // Downloading file
 
             cout << "Opening reading pipe\n";
-            string text; // There are will be Speech-to-Text recognition
+            string text;
             array<char, 128> buffer;
-            FILE* pipe = popen("../exmp/cpp-samples/speech/api/.build/transcribe --bitrate 16000 audio.flac", "r");
+            FILE* pipe;
+            if (deflang == "rus")
+                pipe = popen("../exmp/cpp-samples/speech/api/.build/transcribe --bitrate 48000 --language-code ru audio.oga", "r");
+            else
+                pipe = popen("../exmp/cpp-samples/speech/api/.build/transcribe --bitrate 48000 audio.oga", "r");
 
             if (!pipe) {
-                // TODO
                 text = "Can't detect voice.";
             }
             else {
                 cout << "Reading...\n";
                 while (fgets(buffer.data(), 128, pipe) != NULL) {
-                    cout << buffer.data();
                     text += buffer.data();
                 }
                 cout << endl;
@@ -107,6 +109,9 @@ int main() {
             }
             cout << text << "\n";
             cout << returnCode << endl;
+
+            // system("../exmp/cpp-samples/speech/api/.build/transcribe --bitrate 16000 audio.flac");
+            // cout << ifstream("transcribe").rdbuf();
             
             bot.getApi().sendMessage(message->chat->id, text, false, message->replyToMessage->messageId); // Outputting recognized text.
         }
