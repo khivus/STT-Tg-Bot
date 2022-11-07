@@ -1,4 +1,4 @@
-// STT_Tg_Bot v0.14 Khivus 2022
+// STT_Tg_Bot v0.15 Khivus 2022
 //
 // For credentials:
 // export GOOGLE_APPLICATION_CREDENTIALS=credentials-key.json
@@ -28,33 +28,30 @@ string deflang = "eng";
 bool adding_trusted = false;
 bool deleting_trusted = false;
 int msgid;
-string callforward = "";
+bool callforward = false;
 
-static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
+static int callback(void *data, int argc, char **argv, char **azColName){
    int i;
-   for(i = 0; i<argc; i++) {
+   for(i = 0; i<argc; i++){
       printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-      callforward = callforward;
    }
-   printf("\n");
+   if (argv[0] || argv[1])
+        callforward = true;
    return 0;
 }
 
-bool is_chat_in_db(sqlite3* DB) {
+bool is_chat_in_db(sqlite3* DB, TgBot::Message::Ptr message) {
     int exit = 0;
     exit = sqlite3_exec(DB, ("SELECT * FROM chats WHERE chat_id = " + to_string(message->chat->id)).c_str(), callback, 0, NULL);
     if (exit != SQLITE_OK) {
         cerr << "Error checking db!\n";
     }
-    cout << callforward << endl;
-    if (callforward == "") {
-        callforward = "";
+    if (callforward) {
+        callforward = false;
         return false;
     }
-    else {
-        callforward = "";
+    else 
         return true;
-    }
 }
 
 bool is_trusted(string username) {
@@ -120,16 +117,6 @@ void get_voice(string url) { // Func for get voice file
 int main() {
     TgBot::Bot bot(token);
 
-    sqlite3* DB;
-    int exit = 0;
-    exit = sqlite3_open("langhandler.db", &DB);
-    if (exit) {
-        cerr << "Error open DB " << sqlite3_errmsg(DB) << std::endl;
-    }
-    else
-        cout << "Opened Database Successfully!" << std::endl;
-
-
     bot.getEvents().onCommand("start", [&bot](TgBot::Message::Ptr message) { // If command /start
         string resp = get_msg(deflang, 0);
         bot.getApi().sendMessage(message->chat->id, resp);
@@ -168,7 +155,6 @@ int main() {
                     while (fgets(buffer.data(), 128, pipe) != NULL) {
                         text += buffer.data();
                     }
-                    cout << endl;
                 }
                 auto returnCode = pclose(pipe);
                 if (text == "") {
@@ -178,8 +164,8 @@ int main() {
                 }
                 if (is_recognized)
                     text = "Recognized text: " + text;
-                cout << text << "\n";
-                cout << "Return code: " << returnCode << endl;
+                cout << text;
+                cout << "Return code: " << returnCode << "\n\n";
                 
                 bot.getApi().sendMessage(message->chat->id, text, false, message->replyToMessage->messageId); // Outputting recognized text.
             }
@@ -239,38 +225,14 @@ int main() {
         }
     });
 
-    // bot.getEvents().onCommand("testdb", [&bot](TgBot::Message::Ptr message) {
-    //     if (message->from->username == admin) {
-    //         bot.getApi().sendMessage(message->chat->id, "Testing...");
-    //             sqlite3* DB;
-    //             int exit = 0;
-    //             char* messageError;
-    //             exit = sqlite3_open("langhandler.db", &DB);
-    //             string sql;
-    //             long int cid = message->chat->id;
-
-    //             if (exit) {
-    //                 cerr << "Error open DB " << sqlite3_errmsg(DB) << std::endl;
-    //             }
-    //             else
-    //                 cout << "Opened Database Successfully!" << std::endl;
-
-    //             sql = string("INSERT INTO chats VALUES(") + to_string(cid) + ", '" + deflang + "');";
-    //             exit = sqlite3_exec(DB, sql.c_str(), NULL, NULL, &messageError);
-    //             if (exit != SQLITE_OK) {
-    //                 std::cerr << "Error Insert" << std::endl;
-    //                 sqlite3_free(messageError);
-    //             }
-    //             else
-    //                 std::cout << "Records created Successfully!" << std::endl;
-
-    //             sqlite3_close(DB);
-    //     }
-    // });
-
 
     bot.getEvents().onAnyMessage([&bot](TgBot::Message::Ptr message) {
-        if(is_chat_in_db(DB)) {
+
+        sqlite3* DB;
+        sqlite3_open("langhandler.db", &DB);
+        
+        if(is_chat_in_db(DB, message)) {
+            cout << "Adding " << message->chat->id << " to the db...\n";
             sqlite3_exec(DB, (string("INSERT INTO chats VALUES(") + to_string(message->chat->id) + ", '" + deflang + "')").c_str(), NULL, 0, NULL);
             bot.getApi().sendMessage(message->chat->id, "If you want to change bot language use /language command.");
         }
@@ -334,18 +296,21 @@ int main() {
 
                 bot.getApi().sendMessage(message->chat->id, "Deleted user @" + msg);
             }
-            else if (msgid != message->replyToMessage->messageId) {
+            else if (msgid != message->replyToMessage->messageId && (adding_trusted || deleting_trusted)) {
                 bot.getApi().sendMessage(message->chat->id, "Please, reply to the CORRECT message!");
             }
         }
         else if ((adding_trusted || deleting_trusted) && message->from->username == admin && !message->replyToMessage) {
             bot.getApi().sendMessage(message->chat->id, "Please, reply to the specified message with needed username!");
         }
+        sqlite3_close(DB);
+        cout << endl;
     });
 
 
+
     try {
-        printf("Logged on with username: %s\n", bot.getApi().getMe()->username.c_str());
+        printf("Logged on with username: %s\n\n", bot.getApi().getMe()->username.c_str());
         TgBot::TgLongPoll longPoll(bot);
         while (true) {
             longPoll.start();
@@ -354,6 +319,5 @@ int main() {
         printf("error: %s\n", e.what());
     }
     
-
     return 0;
 }
