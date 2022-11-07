@@ -1,0 +1,2 @@
+/usr/bin/ar qc libparse_arguments.a CMakeFiles/parse_arguments.dir/parse_arguments.cc.o
+/usr/bin/ranlib libparse_arguments.a

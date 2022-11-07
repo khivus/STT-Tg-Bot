@@ -1,0 +1,581 @@
+Package: vcpkg-cmake
+Version: 2022-09-13
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 4236e2629106908f6b7a4a724275e3d6e4bed3c5cc9b8c743e68fb34dc1e32bd
+Type: Port
+Status: install ok installed
+
+Package: boost-uninstall
+Version: 1.80.0
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 805dcf53e410a9a669412b239291a135bc3ef5ed88092adba0ba8fa546fc9588
+Description: Internal vcpkg port used to uninstall Boost
+Type: Port
+Status: install ok installed
+
+Package: boost-vcpkg-helpers
+Version: 1.80.0
+Depends: boost-uninstall
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 0d946e870e40fe5c7410ea7349a1992fdc80d7808336520561f2df41522352a0
+Description: Internal vcpkg port used to modularize Boost
+Type: Port
+Status: install ok installed
+
+Package: boost-config
+Version: 1.80.0
+Depends: boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: aab857cfba90921bf37634eb0730e15df79dfbcac20878cc4b645fd93468c6f3
+Description: Boost config module
+Type: Port
+Status: install ok installed
+
+Package: boost-static-assert
+Version: 1.80.0
+Depends: boost-config, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 2e89efff22c8863bde78dbdf34d4431a4e3ad5df16327b5a80642c4855f663e3
+Description: Boost static_assert module
+Type: Port
+Status: install ok installed
+
+Package: boost-type-traits
+Version: 1.80.0
+Depends: boost-config, boost-static-assert, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 121c5ba8367c2e2202666b4fa7b7d5a9437a0ef6dba3a92821a40499b1c69898
+Description: Boost type_traits module
+Type: Port
+Status: install ok installed
+
+Package: boost-assert
+Version: 1.80.0
+Depends: boost-config, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: b193b0ed04b1551b7a4bbb863ee06a6a2d5fc1d3f7d1642b3d9147be93250c83
+Description: Boost assert module
+Type: Port
+Status: install ok installed
+
+Package: boost-throw-exception
+Version: 1.80.0
+Depends: boost-assert, boost-config, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 6edcf36372506d36f994854e80bed19ce78e184976d0f314338d10b8e60d5365
+Description: Boost throw_exception module
+Type: Port
+Status: install ok installed
+
+Package: boost-preprocessor
+Version: 1.80.0
+Depends: boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 4ac2d6db0b0cbe59cb8458bac7f35c8f5cfe7eb39bfde3c2deff9ca48b4b170f
+Description: Boost preprocessor module
+Type: Port
+Status: install ok installed
+
+Package: boost-io
+Version: 1.80.0
+Depends: boost-config, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 8b14d5db50f1807937d1f2f7c8d6f6332a540eb85e169ad34b1dd5573b095e63
+Description: Boost io module
+Type: Port
+Status: install ok installed
+
+Package: boost-core
+Version: 1.80.0
+Depends: boost-assert, boost-config, boost-static-assert, boost-throw-exception, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 2b46c176fc4bcbc02611fe6aa0ae0c0f8ca9d1aa84a4a29b3c99acee10cd76f6
+Description: Boost core module
+Type: Port
+Status: install ok installed
+
+Package: boost-utility
+Version: 1.80.0
+Depends: boost-assert, boost-config, boost-core, boost-io, boost-preprocessor, boost-throw-exception, boost-type-traits, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: e302464e0aac2bffbffeccfb4f516622c4190ffbd63429c3d326204a78f79f1d
+Description: Boost utility module
+Type: Port
+Status: install ok installed
+
+Package: boost-predef
+Version: 1.80.0
+Depends: boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: e5cd3d1ce4c2964548b7ea23d3c7ee736c9ade8cfd42665f2ad6d5e94df184bb
+Description: Boost predef module
+Type: Port
+Status: install ok installed
+
+Package: boost-winapi
+Version: 1.80.0
+Depends: boost-config, boost-predef, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: ba6c7558bb9a92300539a66375401e9acaf250e3133b581c777305b1627cb8bb
+Description: Boost winapi module
+Type: Port
+Status: install ok installed
+
+Package: boost-move
+Version: 1.80.0
+Depends: boost-assert, boost-config, boost-core, boost-static-assert, boost-vcpkg-helpers, boost-winapi
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 27ef9326a00f00b5659d93edcd957ed2c952cf0d2abf1f525a38e6fe7714b238
+Description: Boost move module
+Type: Port
+Status: install ok installed
+
+Package: boost-smart-ptr
+Version: 1.80.0
+Depends: boost-assert, boost-config, boost-core, boost-move, boost-static-assert, boost-throw-exception, boost-type-traits, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 574d4267b955ed0efd4897c253ea20577564be79086ff1526798586fcef5d100
+Description: Boost smart_ptr module
+Type: Port
+Status: install ok installed
+
+Package: boost-detail
+Version: 1.80.0
+Depends: boost-config, boost-core, boost-preprocessor, boost-static-assert, boost-type-traits, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: af4e87ffad97494dcdba4db6fd71a39cb0bce8f7a734aaef649457ab0a9c6f97
+Description: Boost detail module
+Type: Port
+Status: install ok installed
+
+Package: boost-optional
+Version: 1.80.0
+Depends: boost-assert, boost-config, boost-core, boost-detail, boost-move, boost-predef, boost-static-assert, boost-throw-exception, boost-type-traits, boost-utility, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: bfd38fba4f56ec139dd49f42a8378683bfd7de21475c25f6f6e7c18c7625e61d
+Description: Boost optional module
+Type: Port
+Status: install ok installed
+
+Package: boost-mpl
+Version: 1.80.0
+Depends: boost-config, boost-core, boost-predef, boost-preprocessor, boost-static-assert, boost-type-traits, boost-utility, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 4d29f57ebcd3c0348ac4bca0491de880f941a82370f5581a3d0273f68691dd11
+Description: Boost mpl module
+Type: Port
+Status: install ok installed
+
+Package: boost-typeof
+Version: 1.80.0
+Depends: boost-config, boost-preprocessor, boost-type-traits, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 8be470e52f2a26d40ba80107e5517370eef0f457ac4d0f98ec505d9df6b0559d
+Description: Boost typeof module
+Type: Port
+Status: install ok installed
+
+Package: boost-tuple
+Version: 1.80.0
+Depends: boost-config, boost-core, boost-static-assert, boost-type-traits, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: ed64b296e07235472ea59b392f14ad835e1f02efef7edee11349779eb513882c
+Description: Boost tuple module
+Type: Port
+Status: install ok installed
+
+Package: boost-function-types
+Version: 1.80.0
+Depends: boost-config, boost-core, boost-detail, boost-mpl, boost-preprocessor, boost-type-traits, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 198d8344c48b2b10ad793bc8f758f9ebbdcf26965130381fd39d955208a94bd0
+Description: Boost function_types module
+Type: Port
+Status: install ok installed
+
+Package: boost-integer
+Version: 1.80.0
+Depends: boost-assert, boost-config, boost-core, boost-static-assert, boost-throw-exception, boost-type-traits, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 5d19c81c6d17a48b30d327e0177218cf8c5517ac10e863ac871bd169c5efd877
+Description: Boost integer module
+Type: Port
+Status: install ok installed
+
+Package: boost-container-hash
+Version: 1.80.0
+Depends: boost-assert, boost-config, boost-core, boost-detail, boost-integer, boost-static-assert, boost-type-traits, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 434e6758999cd401cebcb5d5a4b32519a06d5d0c321b91f002b63d7174843125
+Description: Boost container_hash module
+Type: Port
+Status: install ok installed
+
+Package: boost-fusion
+Version: 1.80.0
+Depends: boost-config, boost-container-hash, boost-core, boost-function-types, boost-mpl, boost-preprocessor, boost-static-assert, boost-tuple, boost-type-traits, boost-typeof, boost-utility, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 168793fd10d92f222b3d499d8c7e7c35090f93886c5349b5becee80cb3fad60b
+Description: Boost fusion module
+Type: Port
+Status: install ok installed
+
+Package: boost-conversion
+Version: 1.80.0
+Depends: boost-assert, boost-config, boost-core, boost-smart-ptr, boost-throw-exception, boost-type-traits, boost-typeof, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: c6815d15c85d185abc64257fbc018743944956f33fae55b353d5a2691fd049bd
+Description: Boost conversion module
+Type: Port
+Status: install ok installed
+
+Package: boost-concept-check
+Version: 1.80.0
+Depends: boost-config, boost-preprocessor, boost-static-assert, boost-type-traits, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 84388fb4846ecfc4264b5c0b013ee5379b2ebaf766c798f271920a0bfc5ebf7e
+Description: Boost concept_check module
+Type: Port
+Status: install ok installed
+
+Package: boost-iterator
+Version: 1.80.0
+Depends: boost-assert, boost-concept-check, boost-config, boost-conversion, boost-core, boost-detail, boost-function-types, boost-fusion, boost-mpl, boost-optional, boost-smart-ptr, boost-static-assert, boost-type-traits, boost-utility, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: b8cb3933761f8058e9393774f4a3ce13eb389f6ab9da1b9ee1b8c5b0f2c5cf04
+Description: Boost iterator module
+Type: Port
+Status: install ok installed
+
+Package: boost-tokenizer
+Version: 1.80.0
+Depends: boost-assert, boost-config, boost-core, boost-iterator, boost-throw-exception, boost-type-traits, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 8c8280425b0ec621a552e23155ceb8849397b8ef5ad198948e31cb4211d42d31
+Description: Boost tokenizer module
+Type: Port
+Status: install ok installed
+
+Package: vcpkg-cmake-get-vars
+Version: 2022-05-10
+Port-Version: 1
+Depends: vcpkg-cmake
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 6752aff6771804f856ccadc5d75d080c10e9c0f28a9e8fbab81fb08d17ee7e20
+Type: Port
+Status: install ok installed
+
+Package: boost-modular-build-helper
+Version: 1.80.0
+Port-Version: 1
+Depends: boost-uninstall, vcpkg-cmake, vcpkg-cmake-get-vars
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 88eda50d5aaeef1424c5a19ce422c9c1f9375da8d256fcc33a298206ce6d3a68
+Description: Internal vcpkg port used to build Boost libraries
+Type: Port
+Status: install ok installed
+
+Package: boost-build
+Version: 1.80.0
+Port-Version: 1
+Depends: boost-uninstall
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 1665dd69009eba3b439e3b17c6724b3ce7e5b92307d5d5611372e9eb363aefc5
+Description: Boost.Build
+Type: Port
+Status: install ok installed
+
+Package: boost-regex
+Version: 1.80.0
+Depends: boost-assert, boost-build, boost-concept-check, boost-config, boost-container-hash, boost-core, boost-integer, boost-modular-build-helper, boost-mpl, boost-predef, boost-smart-ptr, boost-static-assert, boost-throw-exception, boost-type-traits, boost-vcpkg-helpers, vcpkg-cmake
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 0b329ec3308179bf259f9f595c1fd7a51b47e270f39119d1776835e91c5532d2
+Description: Boost regex module
+Type: Port
+Status: install ok installed
+
+Package: boost-array
+Version: 1.80.0
+Depends: boost-assert, boost-config, boost-core, boost-static-assert, boost-throw-exception, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 4614393bf42c33e86b10ae4219c146c31e68fb64f0e68f519bc4bd0f178938e4
+Description: Boost array module
+Type: Port
+Status: install ok installed
+
+Package: boost-range
+Version: 1.80.0
+Depends: boost-array, boost-assert, boost-concept-check, boost-config, boost-container-hash, boost-conversion, boost-core, boost-detail, boost-iterator, boost-mpl, boost-optional, boost-preprocessor, boost-regex, boost-static-assert, boost-tuple, boost-type-traits, boost-utility, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: b0cea27200b33e0b75fe4ededc5aedc901412c63ecea0018756097e5ac262652
+Description: Boost range module
+Type: Port
+Status: install ok installed
+
+Package: boost-numeric-conversion
+Version: 1.80.0
+Depends: boost-config, boost-conversion, boost-core, boost-mpl, boost-preprocessor, boost-throw-exception, boost-type-traits, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 0d94df09569887f607ee85e1f4ba64c5bd31ce5499cd5fe225dd715aec0369f3
+Description: Boost numeric_conversion module
+Type: Port
+Status: install ok installed
+
+Package: boost-intrusive
+Version: 1.80.0
+Depends: boost-assert, boost-config, boost-container-hash, boost-core, boost-move, boost-static-assert, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 20982d5d14a37cb36342ae7c90ec4157b1acda46ddd30d5ef08b1ad2a7a4e2c1
+Description: Boost intrusive module
+Type: Port
+Status: install ok installed
+
+Package: boost-container
+Version: 1.80.0
+Depends: boost-assert, boost-build, boost-config, boost-core, boost-intrusive, boost-modular-build-helper, boost-move, boost-static-assert, boost-type-traits, boost-vcpkg-helpers, boost-winapi, vcpkg-cmake
+Architecture: x64-linux
+Multi-Arch: same
+Abi: aa1d1d26cfdcb50cc451c2744693949c726c939a1e3817fc51772a4375e6fd84
+Description: Boost container module
+Type: Port
+Status: install ok installed
+
+Package: boost-lexical-cast
+Version: 1.80.0
+Depends: boost-array, boost-assert, boost-config, boost-container, boost-core, boost-integer, boost-numeric-conversion, boost-range, boost-static-assert, boost-throw-exception, boost-type-traits, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 2255ffdae42e3b775dbf7eca5eeea4d13557118db2b32df9f6572342d24bb198
+Description: Boost lexical_cast module
+Type: Port
+Status: install ok installed
+
+Package: boost-type-index
+Version: 1.80.0
+Depends: boost-config, boost-container-hash, boost-core, boost-preprocessor, boost-static-assert, boost-throw-exception, boost-type-traits, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 0a8ef8b4771ade4ffd55f9ffc6fe951c93a140871033d109c05ce108a7b630ea
+Description: Boost type_index module
+Type: Port
+Status: install ok installed
+
+Package: boost-bind
+Version: 1.80.0
+Depends: boost-config, boost-core, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 0349ad99a347a2dd122ac723c86b420c907e04c0934845ae0d51de69020da2bc
+Description: Boost bind module
+Type: Port
+Status: install ok installed
+
+Package: boost-function
+Version: 1.80.0
+Depends: boost-assert, boost-bind, boost-config, boost-core, boost-integer, boost-preprocessor, boost-throw-exception, boost-type-index, boost-type-traits, boost-typeof, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 919e01fda80fd862d7255017ef71f0dcd9bbb69d96cc73b6ff9c5b4daf0eaf7d
+Description: Boost function module
+Type: Port
+Status: install ok installed
+
+Package: boost-any
+Version: 1.80.0
+Depends: boost-assert, boost-config, boost-core, boost-static-assert, boost-throw-exception, boost-type-index, boost-type-traits, boost-vcpkg-helpers
+Architecture: x64-linux
+Multi-Arch: same
+Abi: b8f7aa174b01e9b40fe7df51e4b284b24b0839b983db009033f7ebc25577a735
+Description: Boost any module
+Type: Port
+Status: install ok installed
+
+Package: boost-program-options
+Version: 1.80.0
+Depends: boost-any, boost-bind, boost-build, boost-config, boost-core, boost-detail, boost-function, boost-iterator, boost-lexical-cast, boost-modular-build-helper, boost-smart-ptr, boost-static-assert, boost-throw-exception, boost-tokenizer, boost-type-traits, boost-vcpkg-helpers, vcpkg-cmake
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 050e0096bda3f1f35f49f5224660e256582dddfdf4552ec40bdb78e17be4e703
+Description: Boost program_options module
+Type: Port
+Status: install ok installed
+
+Package: vcpkg-cmake-config
+Version: 2022-02-06
+Port-Version: 1
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 4fa8dcb35e2c9c91f716144f240a7814950f0dbd92fbbabdee97ff67c2fbc592
+Type: Port
+Status: install ok installed
+
+Package: protobuf
+Version: 3.21.6
+Port-Version: 1
+Depends: protobuf, vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 63623d1b49c537855bbdc80d4c5fb0264594fb89545d99e362a02694b84b4fbd
+Description: Protocol Buffers - Google's data interchange format
+Type: Port
+Status: install ok installed
+
+Package: zlib
+Version: 1.2.12
+Port-Version: 2
+Depends: vcpkg-cmake
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 3c002829571cd5db5604eed90cccb5f259a48c331cbc4b0043bbeee16cd8e875
+Description: A compression library
+Type: Port
+Status: install ok installed
+
+Package: abseil
+Version: 20220623.1
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-linux
+Multi-Arch: same
+Abi: ad81bc877502963653f763a66854aee57243f0a45c41194d24e5e56e1a896e43
+Description: an open-source collection designed to augment the C++ standard library.
+    Abseil is an open-source collection of C++ library code designed to augment the C++ standard library. The Abseil library code is collected from Google's own C++ code base, has been extensively tested and used in production, and is the same code we depend on in our daily coding lives.
+    In some cases, Abseil provides pieces missing from the C++ standard; in others, Abseil provides alternatives to the standard for special needs we've found through usage in the Google code base. We denote those cases clearly within the library code we provide you.
+    Abseil is not meant to be a competitor to the standard library; we've just found that many of these utilities serve a purpose within our code base, and we now want to provide those resources to the C++ community as a whole.
+Type: Port
+Status: install ok installed
+
+Package: upb
+Version: 2022-06-21
+Depends: upb, vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 2e98a0fbbe725efc5873f44cd5cc35b6460234f7b73bc9beae469e7d53d3a290
+Description: μpb (often written 'upb') is a small protobuf implementation written in C.
+Type: Port
+Status: install ok installed
+
+Package: upb
+Feature: codegen
+Depends: abseil, protobuf
+Architecture: x64-linux
+Multi-Arch: same
+Description: Build code generator machinery
+Type: Port
+Status: install ok installed
+
+Package: re2
+Version: 2021-11-01
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 6439fa1ea88aeaaafe3fe4b961e98df0422ef6191f5df315cde37f42c9c2520e
+Description: RE2 is a fast, safe, thread-friendly alternative to backtracking regular expression engines like those used in PCRE, Perl, and Python. It is a C++ library.
+Type: Port
+Status: install ok installed
+
+Package: openssl
+Version: 3.0.5
+Port-Version: 5
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 0f563635449a20be651dc57b2281f38cbf338f2267620e1f37e16de07266a54f
+Description: OpenSSL is an open source project that provides a robust, commercial-grade, and full-featured toolkit for the Transport Layer Security (TLS) and Secure Sockets Layer (SSL) protocols. It is also a general-purpose cryptography library.
+Type: Port
+Status: install ok installed
+
+Package: c-ares
+Version: 1.18.1
+Port-Version: 1
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-linux
+Multi-Arch: same
+Abi: d90d61e14154fa09ce9a7aa07dafb856cfbb2d596208f9ee33c11fc959fc8ec5
+Description: A C library for asynchronous DNS requests
+Type: Port
+Status: install ok installed
+
+Package: grpc
+Version: 1.49.0
+Depends: abseil, c-ares, grpc, openssl, protobuf, re2, upb, vcpkg-cmake, vcpkg-cmake-config, zlib
+Architecture: x64-linux
+Multi-Arch: same
+Abi: f8b5820f7c74dd60c367dc73af43e09794a0be8324acf69e34af4c01f3e6502e
+Description: An RPC library and framework
+Type: Port
+Status: install ok installed
+
+Package: grpc
+Feature: codegen
+Architecture: x64-linux
+Multi-Arch: same
+Description: Build code generator machinery
+Type: Port
+Status: install ok installed
+
+Package: google-cloud-cpp
+Version: 2.3.0
+Depends: abseil, vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-linux
+Multi-Arch: same
+Abi: 265db8385ace9020d5b79fd2a97c998c791f89cfc005a235d1b5e7b677749703
+Description: C++ Client Libraries for Google Cloud Platform APIs.
+Type: Port
+Default-Features: bigquery, bigtable, iam, pubsub, spanner, storage
+Status: install ok installed
+
+Package: google-cloud-cpp
+Feature: grpc-common
+Depends: grpc, protobuf
+Architecture: x64-linux
+Multi-Arch: same
+Description: Dependencies used by all gRPC-based libraries
+Type: Port
+Status: install ok installed
+
+Package: google-cloud-cpp
+Feature: speech
+Depends: google-cloud-cpp
+Architecture: x64-linux
+Multi-Arch: same
+Description: The Google Cloud Speech-to-Text C++ client library
+Type: Port
+Status: install ok installed
+

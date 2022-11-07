@@ -1,0 +1,13 @@
+prefix=${pcfiledir}/../..
+
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: absl_cordz_handle
+Description: Abseil cordz_handle library
+URL: https://abseil.io/
+Version: 20220623
+Libs: -L"${libdir}"  -labsl_cordz_handle
+Requires: absl_base = 20220623, absl_config = 20220623, absl_raw_logging_internal = 20220623, absl_synchronization = 20220623
+Cflags: -I"${includedir}" -DNOMINMAX

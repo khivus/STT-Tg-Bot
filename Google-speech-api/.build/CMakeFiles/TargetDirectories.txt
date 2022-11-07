@@ -1,0 +1,8 @@
+/mnt/c/Users/Khivus/Documents/Progs/exmp/cpp-samples/speech/api/.build/CMakeFiles/parse_arguments.dir
+/mnt/c/Users/Khivus/Documents/Progs/exmp/cpp-samples/speech/api/.build/CMakeFiles/async_transcribe.dir
+/mnt/c/Users/Khivus/Documents/Progs/exmp/cpp-samples/speech/api/.build/CMakeFiles/streaming_transcribe.dir
+/mnt/c/Users/Khivus/Documents/Progs/exmp/cpp-samples/speech/api/.build/CMakeFiles/streaming_transcribe_singlethread.dir
+/mnt/c/Users/Khivus/Documents/Progs/exmp/cpp-samples/speech/api/.build/CMakeFiles/transcribe.dir
+/mnt/c/Users/Khivus/Documents/Progs/exmp/cpp-samples/speech/api/.build/CMakeFiles/streaming_transcribe_coroutines.dir
+/mnt/c/Users/Khivus/Documents/Progs/exmp/cpp-samples/speech/api/.build/CMakeFiles/edit_cache.dir
+/mnt/c/Users/Khivus/Documents/Progs/exmp/cpp-samples/speech/api/.build/CMakeFiles/rebuild_cache.dir

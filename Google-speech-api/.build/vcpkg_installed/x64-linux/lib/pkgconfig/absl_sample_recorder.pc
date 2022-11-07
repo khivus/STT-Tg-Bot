@@ -1,0 +1,13 @@
+prefix=${pcfiledir}/../..
+
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: absl_sample_recorder
+Description: Abseil sample_recorder library
+URL: https://abseil.io/
+Version: 20220623
+Libs: -L"${libdir}"  
+Requires: absl_base = 20220623, absl_synchronization = 20220623
+Cflags: -I"${includedir}" -DNOMINMAX

@@ -1,0 +1,13 @@
+prefix=${pcfiledir}/../..
+
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: absl_container_memory
+Description: Abseil container_memory library
+URL: https://abseil.io/
+Version: 20220623
+Libs: -L"${libdir}"  
+Requires: absl_config = 20220623, absl_memory = 20220623, absl_type_traits = 20220623, absl_utility = 20220623
+Cflags: -I"${includedir}" -DNOMINMAX
