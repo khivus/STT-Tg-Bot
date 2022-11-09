@@ -1,4 +1,4 @@
-// STT_Tg_Bot v1.1 Khivus 2022
+// STT_Tg_Bot v1.2 Khivus 2022
 //
 // For credentials:
 // export GOOGLE_APPLICATION_CREDENTIALS=credentials-key.json
@@ -51,16 +51,16 @@ static int callback(void *data, int argc, char **argv, char **azColName) {
 
 bool is_chat_in_db(sqlite3* DB, Message::Ptr message) {
     int exit = 0;
-    exit = sqlite3_exec(DB, ("SELECT * FROM chats WHERE chat_id = " + to_string(message->chat->id)).c_str(), callback_msg, 0, NULL);
+    exit = sqlite3_exec(DB, ("SELECT * FROM chats WHERE chat_id = " + to_string(message->chat->id)).c_str(), callback_msg, 0, nullptr);
     if (exit != SQLITE_OK) 
         cerr << "Error checking db!\n";
     
     if (callforward) {
         callforward = false;
-        return false;
+        return true;
     }
     else 
-        return true;
+        return false;
 }
 
 bool is_trusted(string username) {
@@ -83,7 +83,7 @@ string get_msg(string mode, sqlite3* DB, Message::Ptr message) {
     json data;
     string msg;
 
-    sqlite3_exec(DB, ("SELECT * FROM chats WHERE chat_id = " + to_string(message->chat->id)).c_str(), callback_msg, 0, NULL);
+    sqlite3_exec(DB, ("SELECT * FROM chats WHERE chat_id = " + to_string(message->chat->id)).c_str(), callback_msg, 0, nullptr);
 
     if (chatlang == "rus")
         file.open("languages/rus.json", ifstream::in);
@@ -159,7 +159,7 @@ int main() {
 
     bot.getEvents().onCommand("convert", [&bot, &DB](Message::Ptr message) { // Command /convert
         if (is_trusted(message->from->username)) {
-            if (message->replyToMessage != NULL && message->replyToMessage->voice != NULL) {
+            if (message->replyToMessage != nullptr && message->replyToMessage->voice != nullptr) {
                 printf("\n---------- Convert used ----------\n"
                         "Bot got replied voice message.\n"
                         "Voice data is: [ %s, %s, %i, %s, %li ]\n", 
@@ -178,7 +178,7 @@ int main() {
                 array<char, 128> buffer;
                 FILE* pipe;
 
-                sqlite3_exec(DB, ("SELECT * FROM chats WHERE chat_id = " + to_string(message->chat->id)).c_str(), callback_msg, 0, NULL);
+                sqlite3_exec(DB, ("SELECT * FROM chats WHERE chat_id = " + to_string(message->chat->id)).c_str(), callback_msg, 0, nullptr);
 
                 if (chatlang == "rus")
                     pipe = popen("Google-speech-api/.build/transcribe --bitrate 48000 --language-code ru audio.oga", "r");
@@ -187,11 +187,11 @@ int main() {
 
                 if (!pipe) {
                     is_recognized = false;
-                    text = get_msg("reco_fail", DB, message);
+                    text = get_msg("reco_fail", DB, message) + "\n";
                 }
                 else {
                     cout << "Listening...\n";
-                    while (fgets(buffer.data(), 128, pipe) != NULL) {
+                    while (fgets(buffer.data(), 128, pipe) != nullptr) {
                         text += buffer.data();
                     }
                 }
@@ -199,7 +199,7 @@ int main() {
                 if (text == "") {
                     is_recognized = false;
                     cout << "Text is empty.\n";
-                    text = get_msg("reco_fail", DB, message);
+                    text = get_msg("reco_fail", DB, message) + "\n";
                 }
                 if (text == "банка\n")
                     bot.getApi().sendMessage(message->chat->id, "Пошел нахуй!", false, message->replyToMessage->messageId);
@@ -275,9 +275,9 @@ int main() {
 
         cout << "\n---------- New message ----------\n";
         sqlite3_exec(DB, ("SELECT * FROM chats WHERE chat_id = " + to_string(message->chat->id)).c_str(), callback, 0, nullptr);
-        if(is_chat_in_db(DB, message)) {
+        if(!is_chat_in_db(DB, message)) {
             cout << "Adding " << message->chat->id << " with default English language to the db...\n";
-            sqlite3_exec(DB, (string("INSERT INTO chats VALUES(") + to_string(message->chat->id) + ", '" + deflang + "')").c_str(), nullptr, 0, nullptr);
+            sqlite3_exec(DB, (string("INSERT INTO chats VALUES(") + to_string(message->chat->id) + ", '" + deflang + "')").c_str(),nullptr , 0, nullptr);
             bot.getApi().sendMessage(message->chat->id, get_msg("lang_prefer", DB, message));
         }
         if (StringTools::startsWith(message->text, "/")) 
