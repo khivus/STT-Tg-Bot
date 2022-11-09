@@ -1,4 +1,4 @@
-// STT_Tg_Bot v1.2 Khivus 2022
+// STT_Tg_Bot v1.3 Khivus 2022
 //
 // For credentials:
 // export GOOGLE_APPLICATION_CREDENTIALS=credentials-key.json
@@ -28,7 +28,7 @@ using json = nlohmann::json;
 
 long int admin_chat_id = 897276284;
 string admin = "khivus";
-string deflang = "eng";
+string deflang = "rus";
 string chatlang;
 bool adding_trusted = false;
 bool deleting_trusted = false;
@@ -133,7 +133,6 @@ int main() {
     else
         cerr << "Error opening database!\n";
 
-    Message::Ptr langmessage;
     InlineKeyboardMarkup::Ptr keyboard(new InlineKeyboardMarkup);
     vector<InlineKeyboardButton::Ptr> row0;
     InlineKeyboardButton::Ptr rusButton(new InlineKeyboardButton);
@@ -219,8 +218,8 @@ int main() {
         }
     });
 
-    bot.getEvents().onCommand("language", [&bot, &keyboard, &DB, &langmessage](Message::Ptr message) { // Command /language
-        langmessage = bot.getApi().sendMessage(message->chat->id, get_msg("language", DB, message), false, 0, keyboard);
+    bot.getEvents().onCommand("language", [&bot, &keyboard, &DB](Message::Ptr message) { // Command /language
+        bot.getApi().sendMessage(message->chat->id, get_msg("language", DB, message), false, 0, keyboard);
     });
 
     bot.getEvents().onCommand("about", [&bot, &DB](Message::Ptr message) { // Command /about
@@ -262,11 +261,11 @@ int main() {
     //
     // -------------------- On Callback Query --------------------
     //
-    bot.getEvents().onCallbackQuery([&bot, &keyboard, &DB, &langmessage](CallbackQuery::Ptr query) { // When pressed button after using command /language
+    bot.getEvents().onCallbackQuery([&bot, &keyboard, &DB](CallbackQuery::Ptr query) { // When pressed button after using command /language
         cout << endl << query->from->username << " pressed button " << query->data << endl;
         sqlite3_exec(DB, (string("UPDATE chats set language = '") + query->data + "' where chat_id = " + to_string(query->message->chat->id)).c_str(), nullptr, 0, nullptr);
         cout << "Changed language in chat " << query->message->chat->id << " to " << query->data << endl;
-        bot.getApi().editMessageText(get_msg("selected_language", DB, langmessage), langmessage->chat->id, langmessage->messageId);
+        bot.getApi().editMessageText(get_msg("selected_language", DB, query->message), query->message->chat->id, query->message->messageId);
     });
     //
     // -------------------- On Any Message --------------------
