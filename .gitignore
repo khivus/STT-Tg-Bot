@@ -15,9 +15,6 @@ telegram_bot
 credentials-key.json
 sync-request.json
 
-# backup func file
-hz.cpp
-
 # Big files
 transcribe
 streaming_transcribe_singlethread

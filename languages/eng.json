@@ -1,0 +1,19 @@
+{
+    "admin_start" : "Telegram bot for convertation voice messages to text messages.\n----- List of commands -----\n/start - This command.\n/convert - Main bot function. Converts voice messages to text. For using you need to be in list of trusted users. Write to @khivus for getting permission.\nUsage: Send voice message -> Reply to that voice message and use /convert.\n/language - Change language. For now available 2 languages: Russian and English.\n/about - Information about bot and developer.\n----- List of admin commands -----\n/addtrusted - Add user to trusted list.\n/deltrusted - Remove user from trusted list.\n/showtrusted - Show list of all trusted users.\nFor any questions or suggestions write to @khivus.",
+    "start" : "Telegram bot for convertation voice messages to text messages.\n----- List of commands -----\n/start - This command.\n/convert - Main bot function. Converts voice messages to text. For using you need to be in list of trusted users. Write to @khivus for getting permission.\nUsage: Send voice message -> Reply to that voice message and use /convert.\n/language - Change language. For now available 2 languages: Russian and English.\n/about - Information about bot and developer.\nFor any questions or suggestions write to @khivus.",
+    "reco_fail" : "Can't recognize voice.",
+    "reco" : "Recognized text: ",
+    "reco_fail_reply" : "This command is used with reply to the voice message.",
+    "not_trusted" : "You are not a trusted user. Write to the @khivus to get permission for /convert command.",
+    "language" : "Select preferred language.",
+    "about" : "Speech-To-Text Telegram Bot using C++. \nDeveloped by @khivus (Aleksey Kharin). \nVersion 1.1.",
+    "addtrusted" : "Reply to this message and type the trusted person username to add.",
+    "deltrusted" : "Reply to this message and type the trusted person username to delete.",
+    "showtrusted" : "List of a trusted users:",
+    "selected_language" : "Selected English language.",
+    "lang_prefer" : "If you want to change bot language use /language command.",
+    "added_trusted" : "Added user @",
+    "deleted_trusted" : "Deleted user @",
+    "trusted_reply_fail" : "Please, reply to the CORRECT message!",
+    "trusted_fail" : "Please, reply to the specified message with needed username!"
+}
