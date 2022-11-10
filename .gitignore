@@ -14,16 +14,3 @@ telegram_bot
 
 # Google cloud key
 credentials-key.json
-sync-request.json
-
-# Big files
-transcribe
-streaming_transcribe_singlethread
-libgoogle_cloud_cpp_cloud_dialogflow_v2_protos.a
-libgoogle_cloud_cpp_monitoring_protos.a
-libgrpc_unsecure.a
-libgrpc.a
-libprotocd.a
-async_transcribe
-streaming_transcribe
-streaming_transcribe_coroutines
