@@ -1,4 +1,4 @@
-// STT_Tg_Bot v1.3 Khivus 2022
+// STT_Tg_Bot v1.4 Khivus 2022
 //
 // For credentials:
 // export GOOGLE_APPLICATION_CREDENTIALS=credentials-key.json
@@ -34,6 +34,21 @@ bool adding_trusted = false;
 bool deleting_trusted = false;
 bool callforward = false;
 int msgid;
+
+sqlite3* open_DB () {
+    int exit = 0;
+    sqlite3* DB;
+    exit = sqlite3_open("languages/langhandler.db", &DB);
+    if (!exit)
+        cout << "Database opened succsessfully.\n";
+    else
+        cerr << "Error opening database!\n";
+    return DB;
+}
+
+void close_DB (sqlite3* DB) {
+     sqlite3_close(DB);
+}
 
 static int callback_msg(void *data, int argc, char **argv, char **azColName) {
    chatlang = argv[1];
@@ -125,14 +140,6 @@ void get_voice(string url) { // Func for get voice file
 int main() {
     Bot bot(token);
 
-    int exit = 0;
-    sqlite3* DB;
-    exit = sqlite3_open("languages/langhandler.db", &DB);
-    if (!exit)
-        cout << "Database opened succsessfully.\n";
-    else
-        cerr << "Error opening database!\n";
-
     InlineKeyboardMarkup::Ptr keyboard(new InlineKeyboardMarkup);
     vector<InlineKeyboardButton::Ptr> row0;
     InlineKeyboardButton::Ptr rusButton(new InlineKeyboardButton);
@@ -147,16 +154,19 @@ int main() {
     //
     // -------------------- On Command --------------------
     //
-    bot.getEvents().onCommand("start", [&bot, &DB](Message::Ptr message) { // Command /start
+    bot.getEvents().onCommand("start", [&bot](Message::Ptr message) { // Command /start
+        sqlite3 * DB = open_DB();
         string resp; 
         if (message->from->username == admin && message->chat->id == admin_chat_id) 
             resp = get_msg("admin_start", DB, message);
         else 
             resp = get_msg("start", DB, message);
         bot.getApi().sendMessage(message->chat->id, resp);
+        close_DB(DB);
     });
 
-    bot.getEvents().onCommand("convert", [&bot, &DB](Message::Ptr message) { // Command /convert
+    bot.getEvents().onCommand("convert", [&bot](Message::Ptr message) { // Command /convert
+        sqlite3 * DB = open_DB();
         if (is_trusted(message->from->username)) {
             if (message->replyToMessage != nullptr && message->replyToMessage->voice != nullptr) {
                 printf("\n---------- Convert used ----------\n"
@@ -200,8 +210,6 @@ int main() {
                     cout << "Text is empty.\n";
                     text = get_msg("reco_fail", DB, message) + "\n";
                 }
-                if (text == "банка\n")
-                    bot.getApi().sendMessage(message->chat->id, "Пошел нахуй!", false, message->replyToMessage->messageId);
                 if (is_recognized)
                     text = get_msg("reco", DB, message) + text;
                 cout << text;
@@ -216,36 +224,46 @@ int main() {
         else {
             bot.getApi().sendMessage(message->chat->id, get_msg("not_trusted", DB, message));
         }
+        close_DB(DB);
     });
 
-    bot.getEvents().onCommand("language", [&bot, &keyboard, &DB](Message::Ptr message) { // Command /language
+    bot.getEvents().onCommand("language", [&bot, &keyboard](Message::Ptr message) { // Command /language
+        sqlite3 * DB = open_DB();
         bot.getApi().sendMessage(message->chat->id, get_msg("language", DB, message), false, 0, keyboard);
+        close_DB(DB);
     });
 
-    bot.getEvents().onCommand("about", [&bot, &DB](Message::Ptr message) { // Command /about
+    bot.getEvents().onCommand("about", [&bot](Message::Ptr message) { // Command /about
+        sqlite3 * DB = open_DB();
         bot.getApi().sendMessage(message->chat->id, get_msg("about", DB, message));
+        close_DB(DB);
     });
 
-    bot.getEvents().onCommand("addtrusted", [&bot, &DB](Message::Ptr message) { // Admin command /addtrusted
+    bot.getEvents().onCommand("addtrusted", [&bot](Message::Ptr message) { // Admin command /addtrusted
         if (message->from->username == admin) {
+            sqlite3 * DB = open_DB();
             Message::Ptr bot_msg = bot.getApi().sendMessage(message->chat->id, get_msg("addtrusted", DB, message));
             adding_trusted = true;
             cout << "Waiting response for add trusted user...\n";
             msgid = bot_msg->messageId;
+            close_DB(DB);
         }
     });
 
-    bot.getEvents().onCommand("deltrusted", [&bot, &DB](Message::Ptr message) { // Admin command /deltrusted
+    bot.getEvents().onCommand("deltrusted", [&bot](Message::Ptr message) { // Admin command /deltrusted
         if (message->from->username == admin) {
+            sqlite3 * DB = open_DB();
             Message::Ptr bot_msg = bot.getApi().sendMessage(message->chat->id, get_msg("deltrusted", DB, message));
             deleting_trusted = true;
             cout << "Waiting response for delete trusted user...\n";
             msgid = bot_msg->messageId;
+            close_DB(DB);
         }
     });
 
-    bot.getEvents().onCommand("showtrusted", [&bot, &DB](Message::Ptr message) { // Admin command /showtrusted
+    bot.getEvents().onCommand("showtrusted", [&bot](Message::Ptr message) { // Admin command /showtrusted
         if (message->from->username == admin) {
+            sqlite3 * DB = open_DB();
             string user, users = "";
             ifstream file;
             file.open("trusted-users.txt", ifstream::in);
@@ -256,26 +274,29 @@ int main() {
             }
             cout << endl;
             bot.getApi().sendMessage(message->chat->id, get_msg("showtrusted", DB, message) + users);
+            close_DB(DB);
         }
     });
     //
     // -------------------- On Callback Query --------------------
     //
-    bot.getEvents().onCallbackQuery([&bot, &keyboard, &DB](CallbackQuery::Ptr query) { // When pressed button after using command /language
+    bot.getEvents().onCallbackQuery([&bot, &keyboard](CallbackQuery::Ptr query) { // When pressed button after using command /language
+        sqlite3 * DB = open_DB();
         cout << endl << query->from->username << " pressed button " << query->data << endl;
         sqlite3_exec(DB, (string("UPDATE chats set language = '") + query->data + "' where chat_id = " + to_string(query->message->chat->id)).c_str(), nullptr, 0, nullptr);
         cout << "Changed language in chat " << query->message->chat->id << " to " << query->data << endl;
         bot.getApi().editMessageText(get_msg("selected_language", DB, query->message), query->message->chat->id, query->message->messageId);
+        close_DB(DB);
     });
     //
     // -------------------- On Any Message --------------------
     //
-    bot.getEvents().onAnyMessage([&bot, &DB](Message::Ptr message) { 
-
+    bot.getEvents().onAnyMessage([&bot](Message::Ptr message) { 
+        sqlite3 * DB = open_DB();
         cout << "\n---------- New message ----------\n";
         sqlite3_exec(DB, ("SELECT * FROM chats WHERE chat_id = " + to_string(message->chat->id)).c_str(), callback, 0, nullptr);
         if(!is_chat_in_db(DB, message)) {
-            cout << "Adding " << message->chat->id << " with default English language to the db...\n";
+            cout << "Adding " << message->chat->id << " with default \"" << deflang << "\" language to the db...\n";
             sqlite3_exec(DB, (string("INSERT INTO chats VALUES(") + to_string(message->chat->id) + ", '" + deflang + "')").c_str(),nullptr , 0, nullptr);
             bot.getApi().sendMessage(message->chat->id, get_msg("lang_prefer", DB, message));
         }
@@ -346,6 +367,7 @@ int main() {
         else if ((adding_trusted || deleting_trusted) && message->from->username == admin && !message->replyToMessage) {
             bot.getApi().sendMessage(message->chat->id, get_msg("trusted_fail", DB, message));
         }
+        close_DB(DB);
     });
 
     try {
@@ -358,6 +380,5 @@ int main() {
         printf("error: %s\n", e.what());
     }
 
-    sqlite3_close(DB);
     return 0;
 }

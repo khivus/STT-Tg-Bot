@@ -7,6 +7,7 @@ audio*
 # Folders
 curl/
 .vscode/
+Google-speech-api/
 
 # 
 telegram_bot
