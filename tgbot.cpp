@@ -1,4 +1,4 @@
-// STT_Tg_Bot v1.5 Khivus 2022
+// STT_Tg_Bot v1.5.1 Khivus 2022
 //
 // For credentials:
 // export GOOGLE_APPLICATION_CREDENTIALS=credentials-key.json
@@ -129,9 +129,10 @@ int main() {
     int exit = 0;
     sqlite3* DB;
     exit = sqlite3_open("languages/langhandler.db", &DB);
-    if (exit)
+    if (!exit)
+        cout << "Database \"langhandler.db\" opened successfully.\n";
+    else
         cerr << "Error opening database!\n";
-    return DB;
 
     InlineKeyboardMarkup::Ptr keyboard(new InlineKeyboardMarkup);
     vector<InlineKeyboardButton::Ptr> row0;
