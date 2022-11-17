@@ -7,10 +7,12 @@ audio*
 # Folders
 curl/
 .vscode/
-Google-speech-api/
 
-# 
+# Executable bot
 telegram_bot
 
 # Google cloud key
 credentials-key.json
+
+# Big files
+transcribe
