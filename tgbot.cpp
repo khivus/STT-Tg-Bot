@@ -1,4 +1,4 @@
-// STT_Tg_Bot v1.5.1 Khivus 2022
+// STT_Tg_Bot v1.6 Khivus 2022
 //
 // For credentials:
 // export GOOGLE_APPLICATION_CREDENTIALS=credentials-key.json
@@ -21,6 +21,7 @@
 #include <vector>
 #include <sqlite3.h>
 #include <nlohmann/json.hpp>
+#include <ctime>
 
 using namespace std;
 using namespace TgBot;
@@ -125,6 +126,7 @@ int main() {
     string deflang = "rus";
     bool adding_trusted = false;
     bool deleting_trusted = false;  
+    bool trusted_list = true;
 
     int exit = 0;
     sqlite3* DB;
@@ -157,8 +159,8 @@ int main() {
         bot.getApi().sendMessage(message->chat->id, resp);
     });
 
-    bot.getEvents().onCommand("convert", [&bot, &DB](Message::Ptr message) { // Command /convert
-        if (is_trusted(message->from->username)) {
+    bot.getEvents().onCommand("convert", [&bot, &DB, &trusted_list](Message::Ptr message) { // Command /convert
+        if (is_trusted(message->from->username) || !trusted_list) {
             if (message->replyToMessage != nullptr && message->replyToMessage->voice != nullptr) {
                 printf("\n---------- Convert used ----------\n"
                         "Bot got replied voice message.\n"
@@ -247,6 +249,7 @@ int main() {
         if (message->from->username == admin) {
             string user, users = "";
             ifstream file;
+            cout << "The list of trusted users: ";
             file.open("trusted-users.txt", ifstream::in);
             while (!file.eof()) {
                 file >> user;
@@ -255,6 +258,22 @@ int main() {
             }
             cout << endl;
             bot.getApi().sendMessage(message->chat->id, get_msg("showtrusted", DB, message) + users);
+        }
+    });
+
+    bot.getEvents().onCommand("enabletrusted", [&bot, &admin, &DB, &admin_chat_id, &trusted_list](Message::Ptr message) { // Admin command /enabletrusted
+        if (message->from->username == admin && message->chat->id == admin_chat_id) {
+            bot.getApi().sendMessage(message->chat->id, get_msg("enabletrusted", DB, message));
+            cout << "Trusted list enabled!\n";
+            trusted_list = true;
+        }
+    });
+
+    bot.getEvents().onCommand("disabletrusted", [&bot, &admin, &DB, &admin_chat_id, &trusted_list](Message::Ptr message) { // Admin command /disabletrusted
+        if (message->from->username == admin && message->chat->id == admin_chat_id) {
+            bot.getApi().sendMessage(message->chat->id, get_msg("disabletrusted", DB, message));
+            cout << "Trusted list disabled!\n";
+            trusted_list = false;
         }
     });
     //
@@ -270,19 +289,42 @@ int main() {
     // -------------------- On Any Message --------------------
     //
     bot.getEvents().onAnyMessage([&bot, &msgid, &admin, &deflang, &adding_trusted, &deleting_trusted, &DB](Message::Ptr message) { 
-        cout << "\n---------- New message ----------\n";
+        time_t now = time(0);
+        char* dt = ctime(&now);
+        cout << "\n---------- New message ----------\n" << dt;
         sqlite3_exec(DB, ("SELECT * FROM chats WHERE chat_id = " + to_string(message->chat->id)).c_str(), callback, 0, nullptr);
         if(!is_chat_in_db(DB, message)) {
             cout << "Adding " << message->chat->id << " with default \"" << deflang << "\" language to the db...\n";
             sqlite3_exec(DB, (string("INSERT INTO chats VALUES(") + to_string(message->chat->id) + ", '" + deflang + "')").c_str(),nullptr , 0, nullptr);
             bot.getApi().sendMessage(message->chat->id, get_msg("lang_prefer", DB, message));
         }
+
+        cout << message->from->username;
         if (StringTools::startsWith(message->text, "/")) 
-            cout << message->from->username << " used command: " << message->text.c_str() << endl;
-        else if (message->text == "" && message->voice) 
-            cout << message->from->username << " send a voice message." << endl;
-        else
-            cout << message->from->username << " wrote: " << message->text.c_str() << endl;
+            cout << " used command: " << message->text.c_str();
+        else if (message->text != "")
+            cout << " wrote: " << message->text.c_str();
+        else if (message->voice)
+            cout << " sent a voice message";
+        else if (message->sticker)
+            cout << " sent a sticker";
+        else if (!message->photo.empty())
+            cout << " sent a photo";
+        else if (message->video)
+            cout << " sent a video";
+        else if (message->videoNote)
+            cout << " sent a video node";
+        else if (message->animation)
+            cout << " sent a gif";
+        else if (message->audio)
+            cout << " sent a audio";
+        else if (message->document)
+            cout << " sent a document";
+
+        if ((message->animation || message->audio || message->document || !message->photo.empty() || message->video || message->voice) && message->caption != "") 
+            cout << " with caption: " << message->caption;
+        
+        cout << endl;
         
         if (message->replyToMessage && message->from->username == admin) {
             if (adding_trusted && msgid == message->replyToMessage->messageId) {
