@@ -1,4 +1,4 @@
-// STT_Tg_Bot v1.6 Khivus 2022
+// STT_Tg_Bot v1.7 Khivus 2022
 //
 // For credentials:
 // export GOOGLE_APPLICATION_CREDENTIALS=credentials-key.json
@@ -56,6 +56,22 @@ bool is_chat_in_db(sqlite3* DB, Message::Ptr message) {
     }
     else 
         return false;
+}
+
+bool trusted_list() {
+    ifstream f("config.json");
+    json data = json::parse(f);
+    bool state = data["trusted_list"].get<bool>();
+    f.close();
+    return state;
+}
+
+void trusted_list(bool state) {
+    ofstream f("config.json");
+    json data = {"trusted_list", state};
+    cout << data << endl;
+    f << data;
+    f.close();
 }
 
 bool is_trusted(string username) {
@@ -126,7 +142,6 @@ int main() {
     string deflang = "rus";
     bool adding_trusted = false;
     bool deleting_trusted = false;  
-    bool trusted_list = true;
 
     int exit = 0;
     sqlite3* DB;
@@ -159,8 +174,8 @@ int main() {
         bot.getApi().sendMessage(message->chat->id, resp);
     });
 
-    bot.getEvents().onCommand("convert", [&bot, &DB, &trusted_list](Message::Ptr message) { // Command /convert
-        if (is_trusted(message->from->username) || !trusted_list) {
+    bot.getEvents().onCommand("convert", [&bot, &DB](Message::Ptr message) { // Command /convert
+        if (is_trusted(message->from->username) || !trusted_list()) {
             if (message->replyToMessage != nullptr && message->replyToMessage->voice != nullptr) {
                 printf("\n---------- Convert used ----------\n"
                         "Bot got replied voice message.\n"
@@ -261,19 +276,19 @@ int main() {
         }
     });
 
-    bot.getEvents().onCommand("enabletrusted", [&bot, &admin, &DB, &admin_chat_id, &trusted_list](Message::Ptr message) { // Admin command /enabletrusted
+    bot.getEvents().onCommand("enabletrusted", [&bot, &admin, &DB, &admin_chat_id](Message::Ptr message) { // Admin command /enabletrusted
         if (message->from->username == admin && message->chat->id == admin_chat_id) {
             bot.getApi().sendMessage(message->chat->id, get_msg("enabletrusted", DB, message));
             cout << "Trusted list enabled!\n";
-            trusted_list = true;
+            trusted_list(true);
         }
     });
 
-    bot.getEvents().onCommand("disabletrusted", [&bot, &admin, &DB, &admin_chat_id, &trusted_list](Message::Ptr message) { // Admin command /disabletrusted
+    bot.getEvents().onCommand("disabletrusted", [&bot, &admin, &DB, &admin_chat_id](Message::Ptr message) { // Admin command /disabletrusted
         if (message->from->username == admin && message->chat->id == admin_chat_id) {
             bot.getApi().sendMessage(message->chat->id, get_msg("disabletrusted", DB, message));
             cout << "Trusted list disabled!\n";
-            trusted_list = false;
+            trusted_list(false);
         }
     });
     //

@@ -6,7 +6,7 @@
     "reco_fail_reply" : "This command is used with reply to the voice message.",
     "not_trusted" : "You are not a trusted user. Write to the @khivus to get permission for /convert command.",
     "language" : "Select preferred language.",
-    "about" : "Speech-To-Text Telegram Bot using C++. \nDeveloped by @khivus (Aleksey Kharin). \nVersion 1.5.1.",
+    "about" : "Speech-To-Text Telegram Bot using C++. \nDeveloped by @khivus (Aleksey Kharin). \nVersion 1.7.",
     "addtrusted" : "Reply to this message and type the trusted person username to add.",
     "deltrusted" : "Reply to this message and type the trusted person username to delete.",
     "showtrusted" : "List of a trusted users:",
