@@ -1,4 +1,4 @@
-// STT_Tg_Bot v1.8 Khivus 2022
+// STT_Tg_Bot v1.9 Khivus 2022
 //
 // For credentials:
 // export GOOGLE_APPLICATION_CREDENTIALS=credentials-key.json
@@ -212,33 +212,39 @@ int main() {
 
                 sqlite3_exec(DB, ("SELECT * FROM chats WHERE chat_id = " + to_string(message->chat->id)).c_str(), callback_msg, 0, nullptr);
 
-                if (chatlang == "rus")
-                    pipe = popen("Google-speech-api/.build/transcribe --bitrate 48000 --language-code ru audio.oga", "r");
-                else
-                    pipe = popen("Google-speech-api/.build/transcribe --bitrate 48000 audio.oga", "r");
+                if (message->replyToMessage->voice->duration <= 60) {
+                    if (chatlang == "rus")
+                        pipe = popen("Google-speech-api/.build/transcribe --bitrate 48000 --language-code ru audio.oga", "r");
+                    else
+                        pipe = popen("Google-speech-api/.build/transcribe --bitrate 48000 audio.oga", "r");
 
-                if (!pipe) {
+                    if (!pipe) {
                     is_recognized = false;
                     text = get_msg("reco_fail", DB, message) + "\n";
-                }
-                else {
-                    cout << "Listening...\n";
-                    while (fgets(buffer.data(), 128, pipe) != nullptr) {
-                        text += buffer.data();
                     }
+                    else {
+                        cout << "Listening...\n";
+                        while (fgets(buffer.data(), 128, pipe) != nullptr) {
+                            text += buffer.data();
+                        }
+                    }
+                    int returnCode = pclose(pipe);
+                    if (text == "") {
+                        is_recognized = false;
+                        cout << "Text is empty.\n";
+                        text = get_msg("reco_fail", DB, message) + "\n";
+                    }
+                    if (is_recognized)
+                        text = get_msg("reco", DB, message) + text;
+                    cout << text;
+                    cout << "Return code: " << returnCode << endl;
+                    
+                    bot.getApi().sendMessage(message->chat->id, text, false, message->replyToMessage->messageId); // Outputting recognized text.
                 }
-                int returnCode = pclose(pipe);
-                if (text == "") {
-                    is_recognized = false;
-                    cout << "Text is empty.\n";
-                    text = get_msg("reco_fail", DB, message) + "\n";
-                }
-                if (is_recognized)
-                    text = get_msg("reco", DB, message) + text;
-                cout << text;
-                cout << "Return code: " << returnCode << endl;
-                
-                bot.getApi().sendMessage(message->chat->id, text, false, message->replyToMessage->messageId); // Outputting recognized text.
+                else { // For convertation more than 1 minute we need to upload file to gcs. I don't want to make this...
+                    cout << "Voice longer than a minute.\n";
+                    bot.getApi().sendMessage(message->chat->id, "Can't transcribe voice longer than a minute. Sorry!");
+                }                
             }
             else {
                 bot.getApi().sendMessage(message->chat->id, get_msg("reco_fail_reply", DB, message)); // If no replyed message and message isn't a voice message

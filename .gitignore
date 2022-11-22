@@ -16,3 +16,4 @@ credentials-key.json
 
 # Big files
 transcribe
+langhandler.db
