@@ -16,4 +16,7 @@ credentials-key.json
 
 # Big files
 transcribe
+
+# Users data
 langhandler.db
+trusted-users.txt
