@@ -1,4 +1,4 @@
-// STT_Tg_Bot v1.9 Khivus 2022
+// STT_Tg_Bot v2 Khivus 2022
 //
 // For credentials:
 // export GOOGLE_APPLICATION_CREDENTIALS=credentials-key.json
@@ -6,30 +6,29 @@
 // For compilation and start:
 // g++ tgbot.cpp -o telegram_bot --std=c++14 -I/usr/local/include -lTgBot -lboost_system -lssl -lcrypto -lpthread -lcurl -lsqlite3 && clear && ./telegram_bot
 // 
-
-#include "token.h" // including private token
-
-#include <aio.h>
-#include <stdio.h>
+// including private token
+#include "token.h" 
+// Including libraries
 #include <tgbot/tgbot.h>
 #include <string>
 #include <iostream>
 #include <curl/curl.h>
 #include <fstream>
-#include <iterator>
 #include <array>
 #include <vector>
 #include <sqlite3.h>
 #include <nlohmann/json.hpp>
 #include <ctime>
-
+// Namespaces
 using namespace std;
 using namespace TgBot;
 using json = nlohmann::json;
-
+// Global variables
 string chatlang;
 bool callforward = false;
-
+//
+// Class trusted
+//
 class trusted {
 private:
     fstream file;
@@ -73,22 +72,24 @@ public:
     }
 
 };
-
-static int callback_msg(void *data, int argc, char **argv, char **azColName) {
+//
+// -------------------- Functions --------------------
+//
+static int callback_msg(void *data, int argc, char **argv, char **azColName) { // Function for database without output
    chatlang = argv[1];
    if (argv[0] || argv[1])
         callforward = true;
    return 0;
 }
 
-static int callback(void *data, int argc, char **argv, char **azColName) {
+static int callback(void *data, int argc, char **argv, char **azColName) {// Function for database with output
    for(int i = 0; i < argc; i++) {
       printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
    }
    return 0;
 }
 
-bool is_chat_in_db(sqlite3* DB, Message::Ptr message) {
+bool is_chat_in_db(sqlite3* DB, Message::Ptr message) { // Funtion checks is there in db that chat
     int exit = 0;
     exit = sqlite3_exec(DB, ("SELECT * FROM chats WHERE chat_id = " + to_string(message->chat->id)).c_str(), callback_msg, 0, nullptr);
     if (exit != SQLITE_OK) 
@@ -102,7 +103,7 @@ bool is_chat_in_db(sqlite3* DB, Message::Ptr message) {
         return false;
 }
 
-string get_msg(string mode, sqlite3* DB, Message::Ptr message) {
+string get_msg(string mode, sqlite3* DB, Message::Ptr message) { // Function for get message from file
     ifstream file;
     json data;
     string msg;
@@ -145,19 +146,20 @@ void get_voice(string url) { // Func for get voice file
     curl_easy_cleanup(curl);
     curl_global_cleanup();
 }
-
+//
+// -------------------- Main() --------------------
+//
 int main() {
     Bot bot(token);
-
+    // Declaring variables
     trusted Tr;
-
     long int admin_chat_id = 897276284;
     int msgid;
     string admin = "khivus";
     string deflang = "rus";
     bool adding_trusted = false;
     bool deleting_trusted = false;  
-
+    // Opening database
     int exit = 0;
     sqlite3* DB;
     exit = sqlite3_open("languages/langhandler.db", &DB);
@@ -165,7 +167,7 @@ int main() {
         cout << "Database \"langhandler.db\" opened successfully.\n";
     else
         cerr << "Error opening database!\n";
-
+    // Keyboard for /language command
     InlineKeyboardMarkup::Ptr keyboard(new InlineKeyboardMarkup);
     vector<InlineKeyboardButton::Ptr> row0;
     InlineKeyboardButton::Ptr rusButton(new InlineKeyboardButton);
@@ -192,7 +194,7 @@ int main() {
     bot.getEvents().onCommand("convert", [&bot, &DB, &Tr](Message::Ptr message) { // Command /convert
         if (Tr.is_trusted(message->from->username) || !Tr.trusted_list()) {
             if (message->replyToMessage != nullptr && message->replyToMessage->voice != nullptr) {
-                printf("\n---------- Convert used ----------\n"
+                printf("\n---------- Convert used ----------\n" // print voice file data
                         "Bot got replied voice message.\n"
                         "Voice data is: [ %s, %s, %i, %s, %li ]\n", 
                         message->replyToMessage->voice->fileId.c_str(), 
@@ -212,12 +214,13 @@ int main() {
 
                 sqlite3_exec(DB, ("SELECT * FROM chats WHERE chat_id = " + to_string(message->chat->id)).c_str(), callback_msg, 0, nullptr);
 
-                if (message->replyToMessage->voice->duration <= 60) {
+                if (message->replyToMessage->voice->duration <= 60) { // If vm is duration is less than 1 minute
+                    // Transcribing voice
                     if (chatlang == "rus")
                         pipe = popen("Google-speech-api/.build/transcribe --bitrate 48000 --language-code ru audio.oga", "r");
                     else
                         pipe = popen("Google-speech-api/.build/transcribe --bitrate 48000 audio.oga", "r");
-
+                    // Reading output
                     if (!pipe) {
                     is_recognized = false;
                     text = get_msg("reco_fail", DB, message) + "\n";
@@ -251,7 +254,7 @@ int main() {
             }
         }
         else {
-            bot.getApi().sendMessage(message->chat->id, get_msg("not_trusted", DB, message));
+            bot.getApi().sendMessage(message->chat->id, get_msg("not_trusted", DB, message)); // If user not in trusted list
         }
     });
 
@@ -325,17 +328,17 @@ int main() {
     // -------------------- On Any Message --------------------
     //
     bot.getEvents().onAnyMessage([&bot, &msgid, &admin, &deflang, &adding_trusted, &deleting_trusted, &DB](Message::Ptr message) { 
-        time_t now = time(0);
+        time_t now = time(0); // Getting time
         char* dt = ctime(&now);
-        cout << "\n---------- New message ----------\n" << dt;
+        cout << "\n---------- New message ----------\n" << dt; // Printing separation and time
         sqlite3_exec(DB, ("SELECT * FROM chats WHERE chat_id = " + to_string(message->chat->id)).c_str(), callback, 0, nullptr);
-        if(!is_chat_in_db(DB, message)) {
+        if(!is_chat_in_db(DB, message)) { // If chat isn't in db
             cout << "Adding " << message->chat->id << " with default \"" << deflang << "\" language to the db...\n";
             sqlite3_exec(DB, (string("INSERT INTO chats VALUES(") + to_string(message->chat->id) + ", '" + deflang + "')").c_str(),nullptr , 0, nullptr);
             bot.getApi().sendMessage(message->chat->id, get_msg("lang_prefer", DB, message));
         }
-
-        cout << message->from->username;
+        // Printing type of message in console
+        cout << message->from->username; 
         if (StringTools::startsWith(message->text, "/")) 
             cout << " used command: " << message->text.c_str();
         else if (message->text != "")
@@ -361,7 +364,7 @@ int main() {
             cout << " with caption: " << message->caption;
         
         cout << endl;
-        
+        // For trusted list users
         if (message->replyToMessage && message->from->username == admin) {
             if (adding_trusted && msgid == message->replyToMessage->messageId) {
                 adding_trusted = false;
@@ -423,7 +426,9 @@ int main() {
             bot.getApi().sendMessage(message->chat->id, get_msg("trusted_fail", DB, message));
         }
     });
-
+    //
+    // -------------------- Long poll --------------------
+    //
     try {
         printf("Logged on with username: %s\n", bot.getApi().getMe()->username.c_str());
         TgLongPoll longPoll(bot);
@@ -433,7 +438,7 @@ int main() {
     } catch (TgException& e) {
         printf("error: %s\n", e.what());
     }
-
+    // Exiting program
     sqlite3_close(DB);
     return 0;
 }
